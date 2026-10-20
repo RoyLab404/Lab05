@@ -71,23 +71,23 @@ Bảng dưới ghi lại 8 lần chạy riêng của `Main`. Mỗi lần, chươ
 
 | Lần | Thứ tự chạy | Eager | Lazy |
 |:---:|---|---:|---:|
-| 1 | lazy → eager | 1,058 µs (1 ms) | 1,987 µs (2 ms) |
-| 2 | lazy → eager | 442 µs (0 ms) | 1,517 µs (1 ms) |
-| 3 | lazy → eager | 430 µs (0 ms) | 1,676 µs (2 ms) |
-| 4 | lazy → eager | 488 µs (1 ms) | 1,685 µs (2 ms) |
-| 5 | lazy → eager | 475 µs (0 ms) | 1,811 µs (2 ms) |
-| 6 | lazy → eager | 486 µs (0 ms) | 1,824 µs (2 ms) |
-| 7 | lazy → eager | 461 µs (0 ms) | 1,661 µs (2 ms) |
-| 8 | lazy → eager | 463 µs (1 ms) | 1,422 µs (1 ms) |
-| | **Trung bình** | **538 µs** | **1,698 µs** |
-| | **Trung vị** | **469 µs** | **1,681 µs** |
+| 1 | lazy → eager | 64 µs (0 ms) | 902 µs (1 ms) |
+| 2 | lazy → eager | 59 µs (0 ms) | 884 µs (1 ms) |
+| 3 | lazy → eager | 80 µs (0 ms) | 923 µs (1 ms) |
+| 4 | lazy → eager | 55 µs (0 ms) | 890 µs (1 ms) |
+| 5 | lazy → eager | 70 µs (0 ms) | 896 µs (1 ms) |
+| 6 | lazy → eager | 58 µs (0 ms) | 1,168 µs (2 ms) |
+| 7 | lazy → eager | 61 µs (0 ms) | 1,060 µs (1 ms) |
+| 8 | lazy → eager | 58 µs (0 ms) | 921 µs (1 ms) |
+| | **Trung bình** | **63 µs** | **956 µs** |
+| | **Trung vị** | **60 µs** | **912 µs** |
 
 Một lượt chạy `Main` trên JVM 25.0.2 cho kết quả:
 
 ```text
-Warm-up (bỏ qua): 52 lá
-Khởi tạo muộn (lazy): 52 lá, 2 ms (1987 µs)
-Khởi tạo sẵn (eager): 52 lá, 1 ms (1058 µs)
+Warm-up (bỏ qua): 52 lá, 1 ms (105 µs)
+Khởi tạo muộn (lazy): 52 lá, 1 ms (902 µs)
+Khởi tạo sẵn (eager): 52 lá, 0 ms (64 µs)
 ```
 
 ## 5. Nhận xét và kết luận
