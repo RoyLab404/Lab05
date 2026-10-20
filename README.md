@@ -67,36 +67,36 @@ java -cp bin lab05.Main
 
 ## 4. Kết quả
 
-Bảng ghi lại 8 lượt đo. Năm lượt đầu chạy eager trước, ba lượt sau đổi sang lazy trước. `Main` chỉ thực hiện một lượt cho mỗi cách; trung bình và trung vị trong bảng được tính riêng, rồi làm tròn đến µs gần nhất.
+Bảng dưới ghi lại 8 lần chạy riêng của `Main`. Mỗi lần, chương trình đo lazy trước rồi eager. Trung bình và trung vị được tính từ các số µs, sau đó làm tròn đến số nguyên gần nhất.
 
 | Lần | Thứ tự chạy | Eager | Lazy |
 |:---:|---|---:|---:|
-| 1 | eager → lazy | 226 µs (0 ms) | 494 µs (1 ms) |
-| 2 | eager → lazy | 174 µs (0 ms) | 497 µs (1 ms) |
-| 3 | eager → lazy | 280 µs (0 ms) | 1,691 µs (2 ms) |
-| 4 | eager → lazy | 261 µs (0 ms) | 903 µs (1 ms) |
-| 5 | eager → lazy | 275 µs (0 ms) | 284 µs (0 ms) |
-| 6 | lazy → eager | 329 µs (1 ms) | 406 µs (0 ms) |
-| 7 | lazy → eager | 191 µs (0 ms) | 398 µs (0 ms) |
-| 8 | lazy → eager | 262 µs (0 ms) | 460 µs (0 ms) |
-| | **Trung bình** | **250 µs** | **642 µs** |
-| | **Trung vị** | **262 µs** | **477 µs** |
+| 1 | lazy → eager | 611 µs (1 ms) | 1,479 µs (1 ms) |
+| 2 | lazy → eager | 338 µs (0 ms) | 1,423 µs (2 ms) |
+| 3 | lazy → eager | 324 µs (0 ms) | 1,314 µs (2 ms) |
+| 4 | lazy → eager | 374 µs (1 ms) | 1,345 µs (1 ms) |
+| 5 | lazy → eager | 339 µs (0 ms) | 1,461 µs (1 ms) |
+| 6 | lazy → eager | 563 µs (0 ms) | 1,414 µs (2 ms) |
+| 7 | lazy → eager | 371 µs (1 ms) | 1,494 µs (1 ms) |
+| 8 | lazy → eager | 349 µs (0 ms) | 1,400 µs (1 ms) |
+| | **Trung bình** | **409 µs** | **1,416 µs** |
+| | **Trung vị** | **360 µs** | **1,419 µs** |
 
 Một lượt chạy `Main` trên JVM 25.0.2 cho kết quả:
 
 ```text
 Warm-up (bỏ qua): 52 lá
-Lazy: 52 lá, 1 ms (1661 µs)
-Eager: 52 lá, 1 ms (622 µs)
+Lazy: 52 lá, 1 ms (1479 µs)
+Eager: 52 lá, 1 ms (611 µs)
 ```
 
 ## 5. Nhận xét và kết luận
 
-Trong tám lượt ở bảng, eager có thời gian thấp hơn lazy mỗi lần. Điều này vẫn đúng ở ba lượt chạy lazy trước.
+Trong tám lượt đã chạy, eager có thời gian thấp hơn lazy. Tuy nhiên, `Main` luôn đo lazy trước, rồi eager, nên thứ tự và trạng thái JVM có thể ảnh hưởng kết quả.
 
-Lượt lazy 1,691 µs kéo trung bình lên 642 µs. Trung vị 477 µs ít bị ảnh hưởng bởi lượt cao bất thường hơn. Với eager, 52 lá đã có sẵn khi lớp được nạp. Lazy tạo lá theo yêu cầu; nếu chương trình cần cả bộ bài thì cuối cùng vẫn tạo đủ 52 lá. Cách lazy phù hợp hơn khi chỉ dùng một phần lá hoặc khi tạo mỗi đối tượng tốn kém.
+Trong mỗi tiến trình, lazy tạo các lá khi vòng lặp yêu cầu chúng; eager tạo sẵn 52 lá khi lớp được nạp lần đầu. Bảng này cho thấy thời gian của eager thấp hơn trên máy chạy thử. Nếu chương trình chỉ dùng một phần bộ bài, lazy có thể tránh tạo những lá không cần đến.
 
-Mỗi lượt đo rất ngắn nên kết quả còn thay đổi theo JVM và tải máy. `currentTimeMillis()` chỉ có độ phân giải đến ms, vì vậy nhiều lượt hiện 0 ms dù số µs khác 0. Các số liệu này chỉ để tham khảo.
+Mỗi lượt đo rất ngắn nên kết quả còn thay đổi theo JVM và tải máy. `currentTimeMillis()` chỉ có độ phân giải đến ms, vì vậy số ms có thể không khớp chính xác với số µs. Các số liệu này chỉ để tham khảo.
 
 ## 6. Cấu trúc project
 
