@@ -6,24 +6,24 @@ import e3.chapter3.Rank;
 import e3.chapter3.Suit;
 
 public class Main {
-	private static void doMotLuot(String ten, BiFunction<Rank, Suit, Object> layLa) {
-		long batDauMs = System.currentTimeMillis();
-		long batDauNs = System.nanoTime();
-		int soLa = 0;
+	private static void measureCards(String label, BiFunction<Rank, Suit, Object> cardGetter) {
+		long startMillis = System.currentTimeMillis();
+		long startNanos = System.nanoTime();
+		int cardCount = 0;
 		for (Rank rank : Rank.values()) {
 			for (Suit suit : Suit.values()) {
-				layLa.apply(rank, suit);
-				soLa++;
+				cardGetter.apply(rank, suit);
+				cardCount++;
 			}
 		}
-		long thoiGianMs = System.currentTimeMillis() - batDauMs;
-		long thoiGianUs = (System.nanoTime() - batDauNs) / 1_000;
-		System.out.println(ten + ": " + soLa + " lá, " + thoiGianMs + " ms (" + thoiGianUs + " µs)");
+		long elapsedMillis = System.currentTimeMillis() - startMillis;
+		long elapsedMicros = (System.nanoTime() - startNanos) / 1_000;
+		System.out.println(label + ": " + cardCount + " lá, " + elapsedMillis + " ms (" + elapsedMicros + " µs)");
 	}
 
 	public static void main(String[] args) {
-		doMotLuot("Warm-up (bỏ qua)", (rank, suit) -> rank);
-		doMotLuot("Khởi tạo muộn (lazy)", CardLazy::get);
-		doMotLuot("Khởi tạo sẵn (eager)", CardEager::get);
+		measureCards("Warm-up (bỏ qua)", (rank, suit) -> rank);
+		measureCards("Khởi tạo muộn (lazy)", CardLazy::get);
+		measureCards("Khởi tạo sẵn (eager)", CardEager::get);
 	}
 }
