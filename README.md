@@ -96,11 +96,29 @@ Khởi tạo sẵn (eager): 52 lá, 0 ms (52 µs)
 
 ## 5. Nhận xét và kết luận
 
-Trong tám lượt đã chạy, eager có thời gian thấp hơn lazy. Tuy nhiên, `Main` luôn đo lazy trước, rồi eager, nên thứ tự và trạng thái JVM có thể ảnh hưởng kết quả.
+### Hai cách tạo flyweight
 
-Trong mỗi tiến trình, lazy tạo các lá khi vòng lặp yêu cầu chúng; eager tạo sẵn 52 lá khi lớp được nạp lần đầu. Bảng này cho thấy thời gian của eager thấp hơn trên máy chạy thử. Nếu chương trình chỉ dùng một phần bộ bài, lazy có thể tránh tạo những lá không cần đến.
+Mỗi lá bài được xác định bởi một cặp `Rank` và `Suit`. Hai lớp lưu các đối tượng theo cặp đó trong một `Map` lồng nhau: map bên ngoài tìm theo rank, map bên trong tìm theo suit. Constructor là private để chương trình lấy lá qua phương thức `get()` và dùng kho flyweight chung.
 
-Mỗi lượt đo rất ngắn nên kết quả còn thay đổi theo JVM và tải máy. `currentTimeMillis()` chỉ có độ phân giải đến ms, vì vậy số ms có thể không khớp chính xác với số µs. Các số liệu này chỉ để tham khảo.
+`CardEager` tạo đủ 52 lá trong khối `static`. JVM chạy khối này khi lớp được khởi tạo, thường là lần đầu chương trình gọi `CardEager.get()`. Sau đó `get()` chỉ tìm rank rồi tìm suit trong hai map.
+
+`CardLazy` bắt đầu với map rỗng. Khi `get(rank, suit)` được gọi, lớp tìm hoặc tạo map con cho rank, kiểm tra lá theo suit, rồi chỉ tạo `CardLazy` nếu lá chưa có. Lần gọi tiếp theo lấy lại lá đã lưu. Vì chương trình yêu cầu đủ 52 tổ hợp, lazy cuối cùng cũng tạo đủ 52 đối tượng.
+
+Trong `CardLazy`, `getOrDefault(pRank, new IdentityHashMap<>())` tạo đối số mặc định trước khi gọi `getOrDefault`; vì thế một map tạm được tạo ở mỗi lần gọi, kể cả khi rank đã có map con. Sau đó mã còn gọi `putIfAbsent`, `containsKey` và `get`. Eager chỉ gọi `get` trên hai map. Phần kiểm tra và map tạm góp phần làm lazy chậm hơn trong số đo này. `IdentityHashMap` so sánh khóa theo cùng tham chiếu; điều này phù hợp với enum vì mỗi hằng enum chỉ có một đối tượng.
+
+### Cách đọc số đo
+
+`Main` đi qua 13 rank và 4 suit để lấy đủ 52 lá cho mỗi cách. Dòng `Warm-up` chỉ tính số tổ hợp từ hai enum; nó không gọi `CardLazy.get()` hay `CardEager.get()`, nên không làm nóng phần tạo flyweight. Trong mỗi lượt đo, chương trình chạy lazy trước rồi eager. Mỗi lượt là một tiến trình Java mới, vì vậy các map static được tạo lại khi bắt đầu lượt tiếp theo.
+
+`System.nanoTime()` cho số µs trong bảng chi tiết hơn. `System.currentTimeMillis()` chỉ có độ phân giải theo ms; vì vậy thời gian µs nhỏ hơn một ms có thể đi kèm giá trị `0 ms`, và hai cột thời gian đôi khi không khớp chính xác.
+
+### Kết quả và giới hạn
+
+Trong tám lượt ghi nhận, eager nhanh hơn lazy ở cả tám lượt. Trung bình của eager là 52 µs, trung vị 52 µs; lazy có trung bình 139 µs và trung vị 139 µs. Kết quả phù hợp với cách cài đặt hiện tại: eager trả về các lá đã tạo sẵn, còn lazy phải kiểm tra map và tạo lá khi chưa có.
+
+Đây là kết quả của một phép đo ngắn trên máy chạy thử, không chứng minh eager luôn nhanh hơn. `Main` luôn chạy lazy trước, nên thứ tự chạy và hoạt động nền của JVM có thể ảnh hưởng kết quả. Nếu chỉ dùng một phần nhỏ bộ bài, lazy vẫn có thể tiết kiệm việc tạo các lá không được yêu cầu; bài đo này lấy đủ 52 lá nên không thể hiện lợi ích đó.
+
+Hai map trong `CardLazy` là `IdentityHashMap`, không đồng bộ. Nếu nhiều luồng cùng yêu cầu một lá chưa được tạo, chúng có thể đồng thời tạo các đối tượng khác nhau cho cùng một cặp rank/suit. Bản này phù hợp với bài chạy đơn luồng; dùng trong chương trình đa luồng thì cần đồng bộ hóa việc tìm và tạo flyweight.
 
 ## 6. Cấu trúc project
 
