@@ -60,7 +60,7 @@ Mã nguồn của hai cách tạo lá và chương trình chạy nằm ở [Card
 
 ## 3. Chương trình đo thời gian
 
-`Main` lấy số lượng giá trị từ hai enum để in dòng warm-up. Sau đó, cùng một vòng lặp đi qua 13 rank và 4 suit để lấy đủ 52 lá cho mỗi cách. Thời gian được in theo ms từ `System.currentTimeMillis()` và µs từ `System.nanoTime()`.
+`Main` in số lá dựa trên số giá trị của hai enum. `measureCards` dùng chung phần bấm giờ; `getAllLazyCards` và `getAllEagerCards` mỗi hàm duyệt rank và suit rồi gọi lớp tương ứng. Thời gian được in theo ms từ `System.currentTimeMillis()` và µs từ `System.nanoTime()`.
 
 Chạy project bằng Java 25:
 
@@ -75,23 +75,23 @@ Bảng dưới ghi lại 8 lần chạy riêng của `Main`. Mỗi lần, chươ
 
 | Lần | Thứ tự chạy | Eager | Lazy |
 |:---:|---|---:|---:|
-| 1 | lazy → eager | 52 µs (0 ms) | 136 µs (0 ms) |
-| 2 | lazy → eager | 55 µs (0 ms) | 135 µs (0 ms) |
-| 3 | lazy → eager | 53 µs (0 ms) | 128 µs (0 ms) |
-| 4 | lazy → eager | 54 µs (0 ms) | 147 µs (1 ms) |
-| 5 | lazy → eager | 51 µs (1 ms) | 138 µs (0 ms) |
-| 6 | lazy → eager | 52 µs (0 ms) | 141 µs (0 ms) |
-| 7 | lazy → eager | 52 µs (0 ms) | 139 µs (0 ms) |
-| 8 | lazy → eager | 49 µs (0 ms) | 147 µs (0 ms) |
-| | **Trung bình** | **52 µs** | **139 µs** |
-| | **Trung vị** | **52 µs** | **139 µs** |
+| 1 | lazy → eager | 864 µs (1 ms) | 1,330 µs (2 ms) |
+| 2 | lazy → eager | 444 µs (1 ms) | 600 µs (1 ms) |
+| 3 | lazy → eager | 450 µs (0 ms) | 692 µs (1 ms) |
+| 4 | lazy → eager | 424 µs (1 ms) | 626 µs (0 ms) |
+| 5 | lazy → eager | 471 µs (1 ms) | 781 µs (1 ms) |
+| 6 | lazy → eager | 585 µs (0 ms) | 805 µs (1 ms) |
+| 7 | lazy → eager | 423 µs (0 ms) | 684 µs (1 ms) |
+| 8 | lazy → eager | 423 µs (0 ms) | 782 µs (1 ms) |
+| | **Trung bình** | **511 µs** | **788 µs** |
+| | **Trung vị** | **447 µs** | **737 µs** |
 
 Một lượt chạy `Main` trên JVM 25.0.2 cho kết quả:
 
 ```text
-Warm-up (bỏ qua): 52 lá
-Khởi tạo muộn (lazy): 52 lá, 0 ms (136 µs)
-Khởi tạo sẵn (eager): 52 lá, 0 ms (52 µs)
+Khởi động: 52 lá
+Khởi tạo muộn (lazy): 52 lá, 2 ms (1330 µs)
+Khởi tạo sẵn (eager): 52 lá, 1 ms (864 µs)
 ```
 
 ## 5. Nhận xét và kết luận
