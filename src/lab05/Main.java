@@ -22,7 +22,8 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		measureCards("Warm-up (bỏ qua)", (rank, suit) -> rank);
+		int cardCount = Rank.values().length * Suit.values().length;
+		System.out.println("Warm-up (bỏ qua): " + cardCount + " lá");
 		measureCards("Khởi tạo muộn (lazy)", CardLazy::get);
 		measureCards("Khởi tạo sẵn (eager)", CardEager::get);
 	}
