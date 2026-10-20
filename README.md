@@ -5,7 +5,7 @@
 | **Họ và tên** | Huỳnh Ngọc Khang |
 | **MSSV** | 4651050116 |
 | **Lớp** | CNTT46D |
-| **Bài** | Lab 05 - Exercise 8, Chapter 4 |
+| **Bài** | Lab 05 - Exercise 8 |
 
 ---
 
