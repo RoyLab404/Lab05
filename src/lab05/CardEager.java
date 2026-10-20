@@ -1,21 +1,23 @@
 package lab05;
 
-import java.util.EnumMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import e3.chapter3.Rank;
 import e3.chapter3.Suit;
 
 public final class CardEager {
-	private static final Map<Rank, Map<Suit, CardEager>> CARDS = new EnumMap<>(Rank.class);
 
+	private static final Map<Rank, Map<Suit, CardEager>> CARDS = new IdentityHashMap<>();
+
+	// Tạo sẵn đủ 52 lá khi lớp được nạp
 	static {
-		for (Rank rank : Rank.values()) {
-			Map<Suit, CardEager> cardsBySuit = new EnumMap<>(Suit.class);
-			for (Suit suit : Suit.values()) {
-				cardsBySuit.put(suit, new CardEager(rank, suit));
+		for (Rank r : Rank.values()) {
+			Map<Suit, CardEager> innerMap = new IdentityHashMap<>();
+			for (Suit s : Suit.values()) {
+				innerMap.put(s, new CardEager(r, s));
 			}
-			CARDS.put(rank, cardsBySuit);
+			CARDS.put(r, innerMap);
 		}
 	}
 
@@ -28,12 +30,12 @@ public final class CardEager {
 	}
 
 	public static CardEager get(Rank pRank, Suit pSuit) {
-		assert pRank != null && pSuit != null;
 		return CARDS.get(pRank).get(pSuit);
 	}
 
+	public Rank rank() { return aRank; }
+	public Suit suit() { return aSuit; }
+
 	@Override
-	public String toString() {
-		return aRank + " of " + aSuit;
-	}
+	public String toString() { return aRank + " of " + aSuit; }
 }

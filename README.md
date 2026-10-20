@@ -22,7 +22,7 @@ Em cài hai lớp dùng chung ý tưởng Flyweight, nhưng tạo lá ở thời
 | `CardEager` | Khởi tạo sẵn | Khi lớp được nạp, trong khối `static` |
 | `CardLazy` | Khởi tạo muộn | Tạo từng lá khi `get(rank, suit)` được gọi lần đầu |
 
-Em dùng `EnumMap` lồng nhau để lưu các lá. Khóa của từng map là `Rank` hoặc `Suit`, đều là enum.
+Hai lớp dùng `IdentityHashMap` lồng nhau để lưu flyweight theo `Rank` và `Suit`.
 
 ```mermaid
 classDiagram
@@ -32,6 +32,8 @@ classDiagram
         -aSuit : Suit
         -CardEager(Rank, Suit)
         +get(Rank, Suit) CardEager$
+        +rank() Rank
+        +suit() Suit
     }
     class CardLazy {
         -CARDS : Map~Rank, Map~Suit, CardLazy~~$
@@ -39,6 +41,8 @@ classDiagram
         -aSuit : Suit
         -CardLazy(Rank, Suit)
         +get(Rank, Suit) CardLazy$
+        +rank() Rank
+        +suit() Suit
     }
     class Rank {
         <<enumeration>>
@@ -71,23 +75,23 @@ Bảng dưới ghi lại 8 lần chạy riêng của `Main`. Mỗi lần, chươ
 
 | Lần | Thứ tự chạy | Eager | Lazy |
 |:---:|---|---:|---:|
-| 1 | lazy → eager | 64 µs (0 ms) | 902 µs (1 ms) |
-| 2 | lazy → eager | 59 µs (0 ms) | 884 µs (1 ms) |
-| 3 | lazy → eager | 80 µs (0 ms) | 923 µs (1 ms) |
-| 4 | lazy → eager | 55 µs (0 ms) | 890 µs (1 ms) |
-| 5 | lazy → eager | 70 µs (0 ms) | 896 µs (1 ms) |
-| 6 | lazy → eager | 58 µs (0 ms) | 1,168 µs (2 ms) |
-| 7 | lazy → eager | 61 µs (0 ms) | 1,060 µs (1 ms) |
-| 8 | lazy → eager | 58 µs (0 ms) | 921 µs (1 ms) |
-| | **Trung bình** | **63 µs** | **956 µs** |
-| | **Trung vị** | **60 µs** | **912 µs** |
+| 1 | lazy → eager | 50 µs (0 ms) | 248 µs (1 ms) |
+| 2 | lazy → eager | 78 µs (0 ms) | 156 µs (0 ms) |
+| 3 | lazy → eager | 86 µs (0 ms) | 141 µs (0 ms) |
+| 4 | lazy → eager | 52 µs (0 ms) | 139 µs (0 ms) |
+| 5 | lazy → eager | 54 µs (0 ms) | 156 µs (0 ms) |
+| 6 | lazy → eager | 50 µs (0 ms) | 142 µs (0 ms) |
+| 7 | lazy → eager | 72 µs (0 ms) | 258 µs (0 ms) |
+| 8 | lazy → eager | 48 µs (0 ms) | 134 µs (0 ms) |
+| | **Trung bình** | **61 µs** | **172 µs** |
+| | **Trung vị** | **53 µs** | **149 µs** |
 
 Một lượt chạy `Main` trên JVM 25.0.2 cho kết quả:
 
 ```text
-Warm-up (bỏ qua): 52 lá, 1 ms (105 µs)
-Khởi tạo muộn (lazy): 52 lá, 1 ms (902 µs)
-Khởi tạo sẵn (eager): 52 lá, 0 ms (64 µs)
+Warm-up (bỏ qua): 52 lá, 0 ms (91 µs)
+Khởi tạo muộn (lazy): 52 lá, 1 ms (248 µs)
+Khởi tạo sẵn (eager): 52 lá, 0 ms (50 µs)
 ```
 
 ## 5. Nhận xét và kết luận

@@ -1,13 +1,14 @@
 package lab05;
 
-import java.util.EnumMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import e3.chapter3.Rank;
 import e3.chapter3.Suit;
 
 public final class CardLazy {
-	private static final Map<Rank, Map<Suit, CardLazy>> CARDS = new EnumMap<>(Rank.class);
+
+	private static final Map<Rank, Map<Suit, CardLazy>> CARDS = new IdentityHashMap<>();
 
 	private final Rank aRank;
 	private final Suit aSuit;
@@ -21,22 +22,17 @@ public final class CardLazy {
 	public static CardLazy get(Rank pRank, Suit pSuit) {
 		assert pRank != null && pSuit != null;
 
-		Map<Suit, CardLazy> cardsBySuit = CARDS.get(pRank);
-		if (cardsBySuit == null) {
-			cardsBySuit = new EnumMap<>(Suit.class);
-			CARDS.put(pRank, cardsBySuit);
+		Map<Suit, CardLazy> innerMap = CARDS.getOrDefault(pRank, new IdentityHashMap<>());
+		CARDS.putIfAbsent(pRank, innerMap);
+		if (!innerMap.containsKey(pSuit)) {
+			innerMap.put(pSuit, new CardLazy(pRank, pSuit));   // chỉ tạo khi có người xin
 		}
-
-		CardLazy card = cardsBySuit.get(pSuit);
-		if (card == null) {
-			card = new CardLazy(pRank, pSuit);
-			cardsBySuit.put(pSuit, card);
-		}
-		return card;
+		return innerMap.get(pSuit);
 	}
+
+	public Rank rank() { return aRank; }
+	public Suit suit() { return aSuit; }
 
 	@Override
-	public String toString() {
-		return aRank + " of " + aSuit;
-	}
+	public String toString() { return aRank + " of " + aSuit; }
 }
